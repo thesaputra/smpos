@@ -213,7 +213,7 @@ function autocomplete_item(){
     templates: {notFound:"Data not found"},
     source: function (query, processSync, processAsync) {
       return $.ajax({
-        url: '{!! route("kasir.transaction.item_autocomplete") !!}',
+        url: '',
         type: 'GET',
         data: {"term": query},
         dataType: 'json',
