@@ -6,11 +6,6 @@
     <h2 class="page-header">Data Regional
       <small>list</small>
     </h2>
-    <div class="text-right">
-			<div class="form-group">
-				<a class="btn btn-primary" href="{!! route('master.region.create') !!}" role="button">+ Regional</a>
-			</div>
-		</div>
     <table class="table table-striped table-bordered table-hover" id="regions-table">
       <thead>
         <tr class="bg-info">
