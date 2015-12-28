@@ -115,6 +115,23 @@ class TransactionAssetController extends Controller
     ->make(true);
   }
 
+  public function transnew_autocomplete(Request $request)
+  {
+    $term = $request->term;
+
+    $results = array();
+
+    $queries = \DB::table('asset_categories')
+    ->where('code', 'LIKE', '%'.$term.'%')
+    ->take(10)->get();
+
+    foreach ($queries as $query)
+    {
+      $results[] = [ 'id' => $query->id, 'code' => $query->code ];
+    }
+
+    return response()->json($results);
+  }
 
   public function index()
   {

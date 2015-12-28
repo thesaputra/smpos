@@ -313,6 +313,13 @@ Route::group(array('prefix' => 'transaction'),function() {
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
+  Route::get('transnew_autocomplete', [
+       'middleware' => ['auth', 'roles'],
+       'as' => 'transaction.transnew_autocomplete',
+       'uses' => 'TransactionAssetController@transnew_autocomplete',
+       'roles' => ['Admin', 'Managerial','Petugas']
+   ]);
+
   Route::post('process', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.process',
