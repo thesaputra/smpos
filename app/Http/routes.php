@@ -17,6 +17,13 @@ Route::get('/',[
 
 Route::group(array('prefix' => 'mutation'),function() {
 
+  Route::get('mutation_autocomplete', [
+       'middleware' => ['auth', 'roles'],
+       'as' => 'mutation.mutation_autocomplete',
+       'uses' => 'MutationController@mutation_autocomplete',
+       'roles' => ['Admin', 'Managerial','Petugas']
+   ]);
+
   Route::get('mutation_detail/{id}', [
       'middleware' => ['auth', 'roles'],
       'as' => 'mutation.mutation_detail',

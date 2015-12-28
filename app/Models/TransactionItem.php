@@ -39,4 +39,9 @@ class TransactionItem extends Model
     return $this->belongsTo('App\Models\TransCondition');
   }
 
+  public function MutationItems()
+  {
+    return $this->hasMany('App\Models\MutationItem');
+  }
+
 }

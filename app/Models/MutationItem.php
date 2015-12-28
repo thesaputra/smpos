@@ -15,4 +15,9 @@ class MutationItem extends Model
   {
     return $this->belongsTo('App\Models\Mutation');
   }
+
+  public function TransactionItem()
+  {
+    return $this->belongsTo('App\Models\TransactionItem');
+  }
 }

@@ -154,7 +154,7 @@ class MutationController extends Controller
   public function mutation_detail($id)
   {
     $mutation = Mutation::where('mutations.id', '=', $id)
-    ->select('mutations.no_mutasi','mutations.office_sender','mutations.division_sender','mutations.office_destination','mutations.division_destination','mutations.date_mutation','mutations.status')
+    ->select('mutations.id','mutations.no_mutasi','mutations.office_sender','mutations.division_sender','mutations.office_destination','mutations.division_destination','mutations.date_mutation','mutations.status')
     ->firstOrFail();
 
     return view('mutations.mutation_detail',compact('mutation'));
@@ -165,9 +165,9 @@ class MutationController extends Controller
     \DB::statement(\DB::raw('set @rownum=0'));
     $datas = MutationItem::select([
       \DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-      'id',
-      'transaction_item_id',
-      'qty'
+      'mutation_items.id',
+      'transaction_items.name as item_name',
+      'mutation_items.qty'
     ]);
     return Datatables::of($datas)
     ->addColumn('action', function ($data) {
@@ -175,7 +175,37 @@ class MutationController extends Controller
       <a href="./edit_mutation_detail/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
       ';
     })
+    ->join('transaction_items','mutation_items.transaction_item_id','=','transaction_items.id')
     ->make(true);
+  }
+
+  public function mutation_autocomplete(Request $request)
+  {
+    $term = $request->term;
+
+    $results = array();
+
+    $queries = \DB::table('transaction_items')
+    ->where('name', 'LIKE', '%'.$term.'%')
+    ->take(10)->get();
+
+    foreach ($queries as $query)
+    {
+      $results[] = [ 'id' => $query->id, 'name' => $query->name ];
+    }
+
+    return response()->json($results);
+  }
+
+  public function store_detail_mutation(Request $request)
+  {
+
+    $data=$request->input();
+    MutationItem::create($data);
+
+    Session::flash('flash_message', 'Data berhasil ditambahkan!');
+
+    return redirect()->back();
   }
 
   private function store_validation_rules($request)

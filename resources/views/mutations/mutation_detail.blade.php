@@ -43,7 +43,10 @@
     <div class="col-md-4">
       <div class="form-group">
         {!! Form::label('transaction_item_id', 'Nama Barang:') !!}
-        {!! Form::text('transaction_item_id',null,['class'=>'form-control']) !!}
+        {!! Form::text('item_name',null,['class'=>'form-control','id'=>'item']) !!}
+
+        {!! Form::hidden('transaction_item_id',null,['class'=>'form-control','id'=>'item_id']) !!}
+
         {!! Form::hidden('mutation_id',$mutation->id,['class'=>'form-control']) !!}
       </div>
       <div class="form-group">
@@ -85,7 +88,7 @@ $(document).ready(function() {
     ajax: '{!! route('mutation.mutation_detail_data') !!}',
     columns: [
       {data: 'rownum', name: 'rownum',searchable: false},
-      { data: 'transaction_item_id', name: 'transaction_item_id' },
+      { data: 'item_name', name: 'item_name' },
       { data: 'qty', name: 'qty' },
       { data: 'action', name: 'action', orderable: false, searchable: false}
     ]
@@ -114,9 +117,8 @@ $(document).ready(function() {
       }
     });
 
-  // autocomplete_item();
-  //
-  // $('#item').focus();
+  autocomplete_item();
+
 });
 
 function autocomplete_item(){
@@ -147,7 +149,7 @@ function autocomplete_item(){
     templates: {notFound:"Data not found"},
     source: function (query, processSync, processAsync) {
       return $.ajax({
-        url: '{!! route("mutation.mutation_detail_data") !!}',
+        url: '{!! route("mutation.mutation_autocomplete") !!}',
         type: 'GET',
         data: {"term": query},
         dataType: 'json',
