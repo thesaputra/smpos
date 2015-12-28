@@ -154,7 +154,7 @@ class PlacingController extends Controller
   public function placing_detail($id)
   {
     $placing = Placing::where('placings.id', '=', $id)
-    ->select('placings.no_penempatan','placings.office_sender','placings.division_sender','placings.office_destination','placings.division_destination','placings.date_penempatan','placings.status')
+    ->select('placings.id','placings.no_penempatan','placings.office_sender','placings.division_sender','placings.office_destination','placings.division_destination','placings.date_penempatan','placings.status')
     ->firstOrFail();
 
     return view('placings.placing_detail',compact('placing'));
@@ -165,9 +165,9 @@ class PlacingController extends Controller
     \DB::statement(\DB::raw('set @rownum=0'));
     $datas = PlacingItem::select([
       \DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-      'id',
-      'transaction_item_id',
-      'qty'
+      'placing_items.id',
+      'transaction_items.name as item_name',
+      'placing_items.qty'
     ]);
     return Datatables::of($datas)
     ->addColumn('action', function ($data) {
@@ -175,7 +175,19 @@ class PlacingController extends Controller
       <a href="./edit_placing_detail/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
       ';
     })
+    ->join('transaction_items','placing_items.transaction_item_id','=','transaction_items.id')
     ->make(true);
+  }
+
+  public function store_detail_placing(Request $request)
+  {
+
+    $data=$request->input();
+    PlacingItem::create($data);
+
+    Session::flash('flash_message', 'Data berhasil ditambahkan!');
+
+    return redirect()->back();
   }
 
   private function store_validation_rules($request)

@@ -38,13 +38,16 @@
     <div class="col-md-12">
       <h4 class="page-header">Tambah Penempatan Barang</h4>
     </div>
-    {!! Form::open(['route' => 'mutation.store_detail_mutation']) !!}
+    {!! Form::open(['route' => 'placing.store_detail_placing']) !!}
 
     <div class="col-md-4">
       <div class="form-group">
         {!! Form::label('transaction_item_id', 'Nama Barang:') !!}
-        {!! Form::text('transaction_item_id',null,['class'=>'form-control']) !!}
-        {!! Form::hidden('mutation_id',$placing->id,['class'=>'form-control']) !!}
+        {!! Form::text('item_name',null,['class'=>'form-control','id'=>'item']) !!}
+
+        {!! Form::hidden('transaction_item_id',null,['class'=>'form-control','id'=>'item_id']) !!}
+
+        {!! Form::hidden('placing_id',$placing->id,['class'=>'form-control']) !!}
       </div>
       <div class="form-group">
         {!! Form::label('qty', 'Jumlah Barang:') !!}
@@ -61,7 +64,7 @@
     <div class="col-md-12">
       <h4 class="page-header">List Data Penempatan Barang</h4>
 
-      <table class="table table-striped table-bordered table-hover" id="mutation-detail-table">
+      <table class="table table-striped table-bordered table-hover" id="placing-detail-table">
         <thead>
           <tr class="bg-info">
             <th>No</th>
@@ -79,13 +82,13 @@
 
 <script>
 $(document).ready(function() {
-  $('#mutation-detail-table').DataTable({
+  $('#placing-detail-table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '{!! route('mutation.mutation_detail_data') !!}',
+    ajax: '{!! route('placing.placing_detail_data') !!}',
     columns: [
       {data: 'rownum', name: 'rownum',searchable: false},
-      { data: 'transaction_item_id', name: 'transaction_item_id' },
+      { data: 'item_name', name: 'item_name' },
       { data: 'qty', name: 'qty' },
       { data: 'action', name: 'action', orderable: false, searchable: false}
     ]
@@ -94,7 +97,7 @@ $(document).ready(function() {
 </script>
 <script>
 $(document).ready(function() {
-  $('#mutation-detail-table').on('click', '#btn-delete[data-remote]', function (e) {
+  $('#placing-detail-table').on('click', '#btn-delete[data-remote]', function (e) {
     e.preventDefault();
       $.ajaxSetup({
         headers: {
@@ -109,14 +112,13 @@ $(document).ready(function() {
           dataType: 'json',
           data: {method: '_DELETE', submit: true}
         }).always(function (data) {
-          $('#mutation-detail-table').DataTable().draw(false);
+          $('#placing-detail-table').DataTable().draw(false);
         });
       }
     });
 
-  // autocomplete_item();
-  //
-  // $('#item').focus();
+  autocomplete_item();
+
 });
 
 function autocomplete_item(){
@@ -147,7 +149,7 @@ function autocomplete_item(){
     templates: {notFound:"Data not found"},
     source: function (query, processSync, processAsync) {
       return $.ajax({
-        url: '{!! route("mutation.mutation_detail_data") !!}',
+        url: '{!! route("mutation.mutation_autocomplete") !!}',
         type: 'GET',
         data: {"term": query},
         dataType: 'json',

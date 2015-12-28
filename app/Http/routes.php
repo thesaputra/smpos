@@ -132,6 +132,13 @@ Route::group(array('prefix' => 'placing'),function() {
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
+  Route::post('store_detail_placing', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'placing.store_detail_placing',
+      'uses' => 'PlacingController@store_detail_placing',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
   Route::get('index', [
       'middleware' => ['auth', 'roles'],
       'as' => 'placing.index',
