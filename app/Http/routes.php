@@ -15,6 +15,21 @@ Route::get('/',[
   'roles' => ['Admin', 'Managerial','Petugas']
 ]);
 
+Route::post('select_off_reg_user', [
+  'middleware' => ['auth', 'roles'],
+  'as' => 'ajax.off_reg_select',
+  'uses' => 'UserController@getOfficeOrRegion',
+  'roles' => ['Admin', 'Managerial','Petugas']
+]);
+
+Route::post('divisi_kprk_select', [
+  'middleware' => ['auth', 'roles'],
+  'as' => 'ajax.divisi_kprk_select',
+  'uses' => 'UserController@getDivisiOrKprk',
+  'roles' => ['Admin', 'Managerial','Petugas']
+]);
+
+
 Route::group(array('prefix' => 'mutation'),function() {
 
   Route::get('mutation_autocomplete', [

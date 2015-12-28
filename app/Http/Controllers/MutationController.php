@@ -91,7 +91,25 @@ class MutationController extends Controller
   {
     $this->store_validation_rules($request);
     $date_mutation = $this->saved_date_format($request->input('date_mutation'));
-    $request->merge(array('date_mutation'=>$date_mutation));
+
+    $no_urut = Mutation::all()->count();
+    $unit_kerja = $request->input('division_sender');
+    $per_kerja = 'PER9';
+    $tahun = Carbon::now()->toDateTimeString();
+    $format = Carbon::parse($tahun)->format('y');
+
+    $before_urut = '00';
+    if ($no_urut > 9) {
+      $before_urut = '00';
+    } elseif ($no_urut > 99) {
+      $before_urut = '0';
+    } elseif ($no_urut > 999) {
+      $before_urut = '';
+    }
+    $no_urut = $no_urut+1;
+    $no_mutasi = $before_urut.$no_urut.'/'.$unit_kerja.'/'.$per_kerja.'/'.$format;
+
+    $request->merge(array('date_mutation'=>$date_mutation,'no_mutasi'=>$no_mutasi));
 
     $data=$request->input();
     Mutation::create($data);
@@ -211,14 +229,14 @@ class MutationController extends Controller
   private function store_validation_rules($request)
   {
     $this->validate($request, [
-      'no_mutasi' => 'required'
+      'date_mutation' => 'required'
     ]);
   }
 
   private function update_validation_rules($request)
   {
     $this->validate($request, [
-      'no_mutasi' => 'required'
+      'date_mutation' => 'required'
     ]);
   }
 

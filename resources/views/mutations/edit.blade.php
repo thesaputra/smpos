@@ -7,7 +7,7 @@
   <div class="col-md-4">
     <div class="form-group">
       {!! Form::label('no_mutasi', ' No Mutasi:') !!}
-      {!! Form::text('no_mutasi',null,['class'=>'form-control']) !!}
+      {!! Form::text('no_mutasi',null,['class'=>'form-control','readonly'=>'true']) !!}
     </div>
     <div class="form-group">
       {!! Form::label('office_sender', 'Kantor Asal:') !!}

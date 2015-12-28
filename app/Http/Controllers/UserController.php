@@ -5,12 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+
+use Response;
 use Session;
 use Validator;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Role;
 use App\Models\Office;
+use App\Models\Region;
+use App\Models\RegionKPRK;
+
+
 use App\Models\OfficeDivision;
 
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -26,6 +32,8 @@ class UserController extends Controller
   {
     return view('users.index');
   }
+
+
 
   public function user_data()
   {
@@ -46,24 +54,67 @@ class UserController extends Controller
     ->make(true);
   }
 
+  public function getOfficeOrRegion(Request $request)
+  {
+
+    if ($request->input('id') == 'reg') {
+
+      $office_region = Region::select(
+      \DB::raw("CONCAT(code,'-',name) AS full_name, id")
+      )->lists('full_name', 'id');
+
+    } else {
+
+      $office_region = Office::select(
+      \DB::raw("CONCAT(code,'-',name) AS full_name, id")
+      )->lists('full_name', 'id');
+
+    }
+
+  return Response::json($office_region);
+  }
+
+  public function getDivisiOrKprk(Request $request)
+  {
+    if ($request->input('type') == 'reg') {
+
+      $office_region = RegionKPRK::select(
+      \DB::raw("CONCAT(code,'-',name) AS full_name, id")
+      )
+      ->where('region_id','=',$request->input('id'))
+      ->lists('full_name', 'id');
+
+    } else {
+
+      $office_region = OfficeDivision::select(
+      \DB::raw("CONCAT(code,'-',name) AS full_name, id")
+      )
+      ->where('office_id','=',$request->input('id'))
+      ->lists('full_name', 'id');
+    }
+
+  return Response::json($office_region);
+  }
+
+
   public function create()
   {
     $roles = Role::lists('name', 'id');
 
-    $offices = Office::select(
+    $office_region = Office::select(
     \DB::raw("CONCAT(offices.code,'-',offices.name) AS full_name, id")
     )->lists('full_name', 'id');
 
-    $division = OfficeDivision::select(
+    $division_kprk = OfficeDivision::select(
     \DB::raw("CONCAT(code,'-',name) AS full_name, id")
     )->lists('full_name', 'id');
 
-    return view('users.create',compact('roles','offices','division'));
+    return view('users.create',compact('roles','office_region','division_kprk'));
   }
 
   public function store(Request $request)
   {
-    $this->store_validation_rules($request);
+    $this->validation_rules($request);
 
     $password = bcrypt($request->input('password'));
     $request->merge(array('password'=>$password));
@@ -99,15 +150,15 @@ class UserController extends Controller
 
     $roles = Role::lists('name', 'id');
 
-    $offices = Office::select(
+    $office_region = Office::select(
     \DB::raw("CONCAT(offices.code,'-',offices.name) AS full_name, id")
     )->lists('full_name', 'id');
 
-    $division = OfficeDivision::select(
+    $division_kprk = OfficeDivision::select(
     \DB::raw("CONCAT(code,'-',name) AS full_name, id")
     )->lists('full_name', 'id');
 
-    return view('users.edit',compact('user','offices','division','roles'));
+    return view('users.edit',compact('user','roles','office_region','division_kprk'));
   }
 
   /**
@@ -119,6 +170,8 @@ class UserController extends Controller
   */
   public function update(Request $request, $id)
   {
+    $this->validation_rules($request);
+
     $password = bcrypt($request->input('password'));
     $request->merge(array('password'=>$password));
 
@@ -148,7 +201,7 @@ class UserController extends Controller
     return redirect()->back();
   }
 
-  private function store_validation_rules($request)
+  private function validation_rules($request)
   {
     $this->validate($request, [
       'name' => 'required',

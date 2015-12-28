@@ -31,7 +31,7 @@
   <div class="col-md-6">
     <div class="form-group">
       <div class="form-group">
-        {!! Form::label('nip', 'Kode Pegawai:') !!}
+        {!! Form::label('nip', 'NIP POS:') !!}
         {!! Form::text('nip',null,['class'=>'form-control']) !!}
       </div>
       <div class="form-group">
@@ -55,16 +55,86 @@
         {!! Form::text('phone',null,['class'=>'form-control']) !!}
       </div>
       <div class="form-group">
-        {!! Form::label('office_id', 'Tempat Bekerja:') !!}
-        {!! Form::select('office_id', $offices, null, ['class' => 'form-control']) !!}
+        {!! Form::label('off_reg', 'Tipe Kantor:') !!}
+        {!! Form::select('off_reg', [
+        'off' => 'Pusat',
+        'reg' => 'Regional'],
+        null, ['class'=>'form-control','id'=>'off-reg']
+        ) !!}
       </div>
       <div class="form-group">
-        {!! Form::label('division', 'Divisi:') !!}
-        {!! Form::select('division', $division, null, ['class' => 'form-control']) !!}
+        {!! Form::label('office_region_id', 'Pusat/Region:') !!}
+        {!! Form::select('office_region_id', $office_region, null, ['class' => 'form-control','id'=>'office_region_id']) !!}
+      </div>
+      <div class="form-group">
+        {!! Form::label('division_kprk_id', 'Divisi/KPRK:') !!}
+        {!! Form::select('division_kprk_id', $division_kprk, null, ['class' => 'form-control','id'=>'division_kprk_id']) !!}
       </div>
       {!! Form::submit('Simpan', ['class' => 'btn btn-primary form-control']) !!}
     </div>
   </div>
   {!! Form::close() !!}
 </div>
+<script>
+$(document).ready(function() {
+  $('#off-reg').on('change', function() {
+    var data = {
+      'id': $(this).val()
+    };
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+      }
+    });
+
+    $.ajax({
+      type: "POST",
+      url: '{{ route("ajax.off_reg_select") }}',
+      data: data,
+      dataType: "Json",
+      success: function (data) {
+        console.log(data);
+        $('#office_region_id').html('');
+          $('#division_kprk_id').html('');
+        $.each(data, function (index, value) {
+          var newOption = $('<option>');
+          newOption.attr('value', index).text(value);
+          $('#office_region_id').append(newOption);
+        })
+      }
+    });
+  });
+
+  $('#office_region_id').on('change', function() {
+    var data = {
+      'id': $(this).val(),
+      'type': $('#off-reg').val()
+    };
+    console.log(data);
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+      }
+    });
+
+    $.ajax({
+      type: "POST",
+      url: '{{ route("ajax.divisi_kprk_select") }}',
+      data: data,
+      dataType: "Json",
+      success: function (data) {
+        console.log(data);
+        $('#division_kprk_id').html('');
+        $.each(data, function (index, value) {
+          var newOption = $('<option>');
+          newOption.attr('value', index).text(value);
+          $('#division_kprk_id').append(newOption);
+        })
+      }
+    });
+  });
+
+
+});
+</script>
 @endsection
