@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
   <h3 class="page-header">Tambah Barang</h3>
-  {!! Form::open(['route' => 'transaction.store_item']) !!}
+  {!! Form::open(['route' => 'transaction.store_item','files'=>true]) !!}
   <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('index', 'Index:') !!}
@@ -62,7 +62,7 @@
   <div class="col-md-4">
     <div class="form-group">
         {!! Form::label('doc_file', 'Import File:') !!}
-        {!! Form::text('doc_file',null,['class'=>'form-control']) !!}
+        {!! Form::file('doc_file',null,['class'=>'form-control']) !!}
     </div>
   </div>
   <div class="col-md-4">

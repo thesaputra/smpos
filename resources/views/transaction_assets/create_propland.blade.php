@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
   <h3 class="page-header">Tambah Properti Tanah</h3>
-  {!! Form::open(['route' => 'transaction.store_propland']) !!}
+  {!! Form::open(['route' => 'transaction.store_propland','files'=>true]) !!}
   <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('index', 'Index:') !!}
@@ -80,7 +80,7 @@
     </div>
     <div class="form-group">
         {!! Form::label('doc_land', 'Dokumen Tanah:') !!}
-        {!! Form::text('doc_land',null,['class'=>'form-control']) !!}
+        {!! Form::file('doc_land',null,['class'=>'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('description', 'Keterangan Tambahan:') !!}

@@ -255,6 +255,13 @@ class TransactionAssetController extends Controller
     $transaction_item=$request->input();
     $save_trans = TransactionItem::create($transaction_item);
 
+    $imageName = $save_trans->id . '-barang.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/transaksi/barang/', $imageName
+     );
+
     Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
     return redirect()->back();
@@ -295,6 +302,13 @@ class TransactionAssetController extends Controller
     $transaction_vehicle=$request->input();
     $save_trans = TransactionVehicle::create($transaction_vehicle);
 
+    $imageName = $save_trans->id . '-kendaraan.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/transaksi/kendaraan/', $imageName
+     );
+
     Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
     return redirect()->back();
@@ -334,6 +348,13 @@ class TransactionAssetController extends Controller
     $transaction_propland=$request->input();
     $save_trans = TransactionPropland::create($transaction_propland);
 
+    $imageName = $save_trans->id . '-tanah.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/transaksi/tanah/', $imageName
+     );
+
     Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
     return redirect()->back();
@@ -370,6 +391,13 @@ class TransactionAssetController extends Controller
 
     $transaction_building=$request->input();
     $save_trans = TransactionPropbuilding::create($transaction_building);
+
+    $imageName = $save_trans->id . '-bangunan.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/transaksi/bangunan/', $imageName
+     );
 
     Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 

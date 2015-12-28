@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
   <h3 class="page-header">Tambah Properti {{$tipe}}</h3>
-  {!! Form::open(['route' => 'transaction.store_propbuilding']) !!}
+  {!! Form::open(['route' => 'transaction.store_propbuilding','files'=>true]) !!}
   <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('index', 'Index:') !!}
@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             {!! Form::label('index tanah', 'Index Tanah:') !!}
-            {!! Form::select('index_tanah', $index_tanah, null, ['class' => 'form-control']) !!}
+            {!! Form::text('index_tanah',null,['class'=>'form-control']) !!}
         </div>
   </div>
   <div class="col-md-4">
@@ -69,7 +69,7 @@
 
     <div class="form-group">
         {!! Form::label('doc_building', 'Dokumen Gedung:') !!}
-        {!! Form::text('doc_building',null,['class'=>'form-control']) !!}
+        {!! Form::file('doc_building',null,['class'=>'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('description', 'Keterangan Tambahan:') !!}

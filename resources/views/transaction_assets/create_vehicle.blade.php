@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
   <h3 class="page-header">Tambah Kendaraan</h3>
-  {!! Form::open(['route' => 'transaction.store_vehicle']) !!}
+  {!! Form::open(['route' => 'transaction.store_vehicle','files'=>true]) !!}
   <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('index', 'Index:') !!}
@@ -50,7 +50,7 @@
     </div>
     <div class="form-group">
         {!! Form::label('year_production', 'Tahun Pembuatan:') !!}
-        {!! Form::text('year_production',null,['class'=>'form-control']) !!}
+        {!! Form::text('year_production',null,['class'=>'form-control','id'=>'year-product']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('silinder', 'Isi Silinder/HP:') !!}
@@ -88,11 +88,11 @@
     </div>
     <div class="form-group">
         {!! Form::label('doc_bpkb', 'Dokumen BPKB:') !!}
-        {!! Form::text('doc_bpkb',null,['class'=>'form-control']) !!}
+        {!! Form::file('doc_bpkb',null,['class'=>'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('doc_stnk', 'Dokumen STNK:') !!}
-        {!! Form::text('doc_stnk',null,['class'=>'form-control']) !!}
+        {!! Form::file('doc_stnk',null,['class'=>'form-control']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('trans_forvehicle_id', 'Peruntukan Kendaraan:') !!}
@@ -122,6 +122,11 @@ $(document).ready(function() {
     format: "dd/mm/yyyy",
     language: "id"
   });
+  $("#year-product").datepicker( {
+    format: " yyyy",
+    viewMode: "years",
+    minViewMode: "years"
+});
 });
 </script>
 @endsection
