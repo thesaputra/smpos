@@ -179,6 +179,13 @@ class RegionController extends Controller
     $kprk=$request->input();
     $save_kprk = RegionKPRK::create($kprk);
 
+    $imageName = $save_kprk->id . '-kprk.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/kprks/', $imageName
+     );
+
     // return Redirect::to(URL::previous() . "#kprks-table");
     Session::flash("flash_message", "Data tersimpan!");
 
@@ -194,6 +201,13 @@ class RegionController extends Controller
 
     $kpc=$request->input();
     $save_kpc = RegionKPC::create($kpc);
+
+    $imageName = $save_kpc->id . '-kpc.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/kpcs/', $imageName
+     );
 
     Session::flash("flash_message", "Data tersimpan!");
 
@@ -226,6 +240,13 @@ class RegionController extends Controller
 
     $regionKPRK=RegionKPRK::find($id);
     $regionKPRK->update($regKPRKUpdate);
+
+    $imageName = $regionKPRK->id . '-kprk.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/kprks/', $imageName
+     );
 
     Session::flash('flash_message', 'Data berhasil diupdate!');
 
@@ -263,6 +284,13 @@ class RegionController extends Controller
 
     $regionKPC=RegionKPC::find($id);
     $regionKPC->update($regKPCUpdate);
+
+    $imageName = $regionKPC->id . '-kprc.' .
+    $request->file('url_photo')->getClientOriginalExtension();
+
+     $request->file('url_photo')->move(
+         base_path() . '/public/images/kpcs/', $imageName
+     );
 
     Session::flash('flash_message', 'Data berhasil diupdate!');
 

@@ -38,7 +38,7 @@
     <div class="col-md-12">
       <h4 class="page-header">Tambah Data KPRK</h4>
     </div>
-    {!! Form::open(['route' => 'master.region.store_kprk']) !!}
+    {!! Form::open(['route' => 'master.region.store_kprk','files'=>true]) !!}
 
     <div class="col-md-4">
       <div class="form-group">
@@ -70,7 +70,7 @@
       </div>
       <div class="form-group">
         {!! Form::label('url_photo', 'Foto Pendukung:') !!}
-        {!! Form::text('url_photo',null,['class'=>'form-control']) !!}
+        {!! Form::file('url_photo', null,['class'=>'form-control']) !!}
       </div>
       <div class="form-group">
         {!! Form::label('fax', 'No Faks:') !!}
