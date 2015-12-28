@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\URL;
 use Session;
 use App\Http\Controllers\Controller;
 use App\Models\Placing;
+use App\Models\PlacingItem;
+
 use App\Models\Office;
 use App\Models\OfficeDivision;
 
@@ -36,7 +38,7 @@ class PlacingController extends Controller
     ->addColumn('action', function ($data) {
       return '
       <a href="./edit/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-      <a href="#" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Detail Barang Penempatan</a>
+      <a href="./placing_detail/'.$data->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Detail Barang Penempatan</a>
       ';
     })
     ->editColumn('date_penempatan', function ($data) {
@@ -147,6 +149,33 @@ class PlacingController extends Controller
   public function destroy($id)
   {
     //
+  }
+
+  public function placing_detail($id)
+  {
+    $placing = Placing::where('placings.id', '=', $id)
+    ->select('placings.no_penempatan','placings.office_sender','placings.division_sender','placings.office_destination','placings.division_destination','placings.date_penempatan','placings.status')
+    ->firstOrFail();
+
+    return view('placings.placing_detail',compact('placing'));
+  }
+
+  public function placing_detail_data($id)
+  {
+    \DB::statement(\DB::raw('set @rownum=0'));
+    $datas = PlacingItem::select([
+      \DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+      'id',
+      'transaction_item_id',
+      'qty'
+    ]);
+    return Datatables::of($datas)
+    ->addColumn('action', function ($data) {
+      return '
+      <a href="./edit_placing_detail/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      ';
+    })
+    ->make(true);
   }
 
   private function store_validation_rules($request)

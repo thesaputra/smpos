@@ -16,6 +16,28 @@ Route::get('/',[
 ]);
 
 Route::group(array('prefix' => 'mutation'),function() {
+
+  Route::get('mutation_detail/{id}', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'mutation.mutation_detail',
+      'uses' => 'MutationController@mutation_detail',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
+  Route::get('mutation_detail_data/{id}', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'mutation.mutation_detail_data',
+      'uses' => 'MutationController@mutation_detail_data',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
+  Route::post('store_detail_mutation', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'mutation.store_detail_mutation',
+      'uses' => 'MutationController@store_detail_mutation',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
   Route::get('index_sent', [
       'middleware' => ['auth', 'roles'],
       'as' => 'mutation.index_sent',
@@ -88,6 +110,21 @@ Route::group(array('prefix' => 'mutation'),function() {
 });
 
 Route::group(array('prefix' => 'placing'),function() {
+
+  Route::get('placing_detail/{id}', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'placing.placing_detail',
+      'uses' => 'PlacingController@placing_detail',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
+  Route::get('placing_detail_data/{id}', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'placing.placing_detail_data',
+      'uses' => 'PlacingController@placing_detail_data',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
   Route::get('index', [
       'middleware' => ['auth', 'roles'],
       'as' => 'placing.index',

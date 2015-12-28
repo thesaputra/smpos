@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\URL;
 use Session;
 use App\Http\Controllers\Controller;
 use App\Models\Mutation;
+use App\Models\MutationItem;
+
 use App\Models\Office;
 use App\Models\OfficeDivision;
 
@@ -36,7 +38,7 @@ class MutationController extends Controller
     ->addColumn('action', function ($data) {
       return '
       <a href="./edit/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-      <a href="#" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Detail Barang Mutasi</a>
+      <a href="./mutation_detail/'.$data->id.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Detail Barang Mutasi</a>
       ';
     })
     ->editColumn('date_mutation', function ($data) {
@@ -147,6 +149,33 @@ class MutationController extends Controller
   public function destroy($id)
   {
     //
+  }
+
+  public function mutation_detail($id)
+  {
+    $mutation = Mutation::where('mutations.id', '=', $id)
+    ->select('mutations.no_mutasi','mutations.office_sender','mutations.division_sender','mutations.office_destination','mutations.division_destination','mutations.date_mutation','mutations.status')
+    ->firstOrFail();
+
+    return view('mutations.mutation_detail',compact('mutation'));
+  }
+
+  public function mutation_detail_data($id)
+  {
+    \DB::statement(\DB::raw('set @rownum=0'));
+    $datas = MutationItem::select([
+      \DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+      'id',
+      'transaction_item_id',
+      'qty'
+    ]);
+    return Datatables::of($datas)
+    ->addColumn('action', function ($data) {
+      return '
+      <a href="./edit_mutation_detail/'.$data->id.'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      ';
+    })
+    ->make(true);
   }
 
   private function store_validation_rules($request)
