@@ -2,12 +2,9 @@
 
 @section('content')
 <div class="row">
-  <div class="col-md-3">
-  </div>
-  <div class="col-md-6">
-    <h2 class="page-header">Tambah Mutasi Kirim
-    </h2>
-    {!! Form::open(['route' => 'transaction.mutation.store']) !!}
+  <h2 class="page-header">Tambah Mutasi Kirim</h2>
+  {!! Form::open(['route' => 'transaction.mutation.store']) !!}
+  <div class="col-md-4">
     <div class="form-group">
       {!! Form::label('no_mutasi', ' No Mutasi:') !!}
       {!! Form::text('no_mutasi',null,['class'=>'form-control']) !!}
@@ -28,6 +25,8 @@
       {!! Form::label('division_destination', 'Divisi Tujuan:') !!}
       {!! Form::text('division_destination',null,['class'=>'form-control']) !!}
     </div>
+  </div>
+  <div class="col-md-4">
     <div class="form-group">
       {!! Form::label('date_mutation', 'Tanggal Mutasi:') !!}
       {!! Form::text('date_mutation',null,['class'=>'form-control','id'=>'date-mutation']) !!}
@@ -40,8 +39,9 @@
     <div class="form-group">
       {!! Form::submit('Simpan', ['class' => 'btn btn-primary form-control']) !!}
     </div>
-    {!! Form::close() !!}
   </div>
+  {!! Form::close() !!}
+</div>
 </div>
 <script>
 $(document).ready(function() {
