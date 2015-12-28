@@ -6,11 +6,6 @@
     <h2 class="page-header">Data Kantor Pusat
       <small>list</small>
     </h2>
-    <div class="text-right">
-			<div class="form-group">
-				<a class="btn btn-primary" href="{!! route('master.office.create') !!}" role="button">+ Kantor Pusat</a>
-			</div>
-		</div>
     <table class="table table-striped table-bordered table-hover" id="offices-table">
       <thead>
         <tr class="bg-info">

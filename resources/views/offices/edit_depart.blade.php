@@ -21,11 +21,11 @@
   </div>
   <h3 class="page-header">&nbsp;</h3>
   <div class="col-md-4">
-    {!! Form::model($depart,['method' => 'PATCH','route'=>['master.office.depart.update',$depart->id]]) !!}
+    {!! Form::model($depart,['method' => 'PATCH','route'=>['master.office.depart.update',$depart->id],'files'=>true]) !!}
         <div class="form-group">
             {!! Form::label('code', 'Nomor Dirian:') !!}
             {!! Form::text('code',null,['class'=>'form-control', 'readonly'=>'true']) !!}
-            {!! Form::text('office_division_id',null,['class'=>'form-control', 'readonly'=>'true']) !!}
+            {!! Form::hidden('office_division_id',null,['class'=>'form-control', 'readonly'=>'true']) !!}
         </div>
         <div class="form-group">
             {!! Form::label('name', 'Nama Divisi:') !!}
@@ -51,7 +51,7 @@
         </div>
         <div class="form-group">
             {!! Form::label('url_photo', 'Foto Pendukung:') !!}
-            {!! Form::text('url_photo',null,['class'=>'form-control']) !!}
+            {!! Form::file('url_photo', null,['class'=>'form-control']) !!}
         </div>
         <div class="form-group">
           {!! Form::label('fax', 'No Faks:') !!}

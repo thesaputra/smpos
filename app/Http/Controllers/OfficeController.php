@@ -86,6 +86,13 @@ class OfficeController extends Controller
       $office=Office::find($id);
       $office->update($officeUpdate);
 
+      $imageName = $office->id . '-office.' .
+      $request->file('url_photo')->getClientOriginalExtension();
+
+       $request->file('url_photo')->move(
+           base_path() . '/public/images/offices/', $imageName
+       );
+
       Session::flash('flash_message', 'Data berhasil diupdate!');
 
       return redirect('master/offices');
@@ -188,6 +195,13 @@ class OfficeController extends Controller
       $division=$request->input();
       $save_division = OfficeDivision::create($division);
 
+      $imageName = $save_division->id . '-divisi.' .
+      $request->file('url_photo')->getClientOriginalExtension();
+
+       $request->file('url_photo')->move(
+           base_path() . '/public/images/divisions/', $imageName
+       );
+
       // return Redirect::to(URL::previous() . "#kprks-table");
       Session::flash("flash_message", "Data tersimpan!");
 
@@ -215,6 +229,13 @@ class OfficeController extends Controller
 
       $offDivision=OfficeDivision::find($id);
       $offDivision->update($DivisionUpdate);
+
+      $imageName = $offDivision->id . '-divisi.' .
+      $request->file('url_photo')->getClientOriginalExtension();
+
+       $request->file('url_photo')->move(
+           base_path() . '/public/images/divisions/', $imageName
+       );
 
       Session::flash('flash_message', 'Data berhasil diupdate!');
 
@@ -289,6 +310,13 @@ class OfficeController extends Controller
       $depart=$request->input();
       $save_depart = OfficeDepart::create($depart);
 
+      $imageName = $save_depart->id . '-bagian.' .
+      $request->file('url_photo')->getClientOriginalExtension();
+
+       $request->file('url_photo')->move(
+           base_path() . '/public/images/bagian/', $imageName
+       );
+
       // return Redirect::to(URL::previous() . "#kprks-table");
       Session::flash("flash_message", "Data tersimpan!");
 
@@ -316,6 +344,13 @@ class OfficeController extends Controller
 
       $offDepart=officeDepart::find($id);
       $offDepart->update($DepartUpdate);
+
+      $imageName = $offDepart->id . '-bagian.' .
+      $request->file('url_photo')->getClientOriginalExtension();
+
+       $request->file('url_photo')->move(
+           base_path() . '/public/images/bagian/', $imageName
+       );
 
       Session::flash('flash_message', 'Data berhasil diupdate!');
 

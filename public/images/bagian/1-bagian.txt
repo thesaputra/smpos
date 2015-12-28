@@ -1,0 +1,13 @@
+create view view_daerah_propinsi as select `mp`.`kode_daerah` AS `kode_daerah`,`mp`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp` where (`mp`.`kategori` = 'propinsi')
+
+=====================================================
+
+create view view_daerah_'kabupaten as select `mp`.`kode_daerah` AS `kode_daerah`,(select `mp1`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp1` where (left(`mp`.`kode_daerah`,2) = `mp1`.`kode_daerah`)) AS `nm_propinsi`,`mp`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp` where (`mp`.`kategori` = 'kabupaten / kota')
+
+=======================================================
+
+create view view_daerah_kecamatan as select `mp`.`kode_daerah` AS `kode_daerah`,(select `mp1`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp1` where (left(`mp`.`kode_daerah`,2) = `mp1`.`kode_daerah`)) AS `nm_propinsi`,(select `mp2`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp2` where (left(`mp`.`kode_daerah`,5) = `mp2`.`kode_daerah`)) AS `nm_kabupaten`,`mp`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp` where (`mp`.`kategori` = 'kecamatan')
+
+=====================================================
+
+create view view_daerah_kelurahan as select `mp`.`kode_daerah` AS `kode_daerah`,(select `mp1`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp1` where (left(`mp`.`kode_daerah`,2) = `mp1`.`kode_daerah`)) AS `nm_propinsi`,(select `mp2`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp2` where (left(`mp`.`kode_daerah`,5) = `mp2`.`kode_daerah`)) AS `nm_kabupaten`,(select `mp3`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp3` where (left(`mp`.`kode_daerah`,8) = `mp3`.`kode_daerah`)) AS `nm_kecamatan`,`mp`.`nm_daerah` AS `nm_daerah` from `mp_daerah` `mp` where (`mp`.`kategori` = 'kelurahan' or 'desa')
