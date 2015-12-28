@@ -21,13 +21,19 @@
           <li><a href="{!! route('master.region') !!}"><i class="fa fa-book"></i>Data Regional</a></li>
         </ul>
       </li>
-      <li><a href="{!! route('transaction.setup') !!}"><i class="fa fa-book"></i>Master Transaksi</a></li>
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Transaksi<span class="caret"></span></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Setup<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{!! route('transaction.setup') !!}"><i class="fa fa-book"></i>Master Transaksi</a></li>
+          <li><a href="{!! route('master.asset_type') !!}"><i class="fa fa-book"></i>Tipe Asset</a></li>
+          <li><a href="{!! route('master.asset_category') !!}"><i class="fa fa-book"></i>Kategori Asset</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pengelolaan Asset<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="{!! route('transaction.new') !!}"><i class="fa fa-book"></i>Transaksi Baru</a></li>
           <li><a href="{!! route('transaction.manage.assets') !!}"><i class="fa fa-book"></i>Manage Assets</a></li>
-          <li><a href="#"><i class="fa fa-book"></i>Penempatan</a></li>
           </ul>
       </li>
       <li class="dropdown">
@@ -36,13 +42,6 @@
           <li><a href="{!! route('mutation.index') !!}"><i class="fa fa-book"></i>Mutasi Kirim</a></li>
           <li><a href="{!! route('mutation.index_sent') !!}"><i class="fa fa-book"></i>Mutasi Terima</a></li>
           <li><a href="{!! route('placing.index') !!}"><i class="fa fa-book"></i>Penempatan</a></li>
-          </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Referensi Asset<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="{!! route('master.asset_type') !!}"><i class="fa fa-book"></i>Tipe Asset</a></li>
-          <li><a href="{!! route('master.asset_category') !!}"><i class="fa fa-book"></i>Kategori Asset</a></li>
           </ul>
       </li>
       <li class="dropdown">
