@@ -11,8 +11,18 @@
         <div class="form-group">
           {!! Form::label('type_master', 'Jenis Master:') !!}
           {!! Form::select('type_master', [
-          'units' => 'Satuan',
-          'status_lands' => 'Status Tanah'],
+          '0' => 'Kondisi',
+          '1' => 'Satuan',
+          '2' => 'Status Tanah',
+          '3' => 'Status Sertifikat',
+          '4' => 'Status Bangunan',
+          '5' => 'Dana Perolehan',
+          '6' => 'Golongan',
+          '7' => 'Peruntukan Kendaraan',
+          '8' => 'Peruntukan Tanah',
+          '9' => 'Peruntukan Bangunan',
+          '10' => 'Status Barang'
+          ],
           null, ['class'=>'form-control']
           ) !!}
         </div>

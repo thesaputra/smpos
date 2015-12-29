@@ -16,6 +16,8 @@ use App\Models\TransForVehicle;
 use App\Models\TransForLand;
 use App\Models\TransForBuilding;
 use App\Models\TransCondition;
+use App\Models\TransItem;
+
 
 use Yajra\Datatables\Datatables;
 
@@ -36,12 +38,47 @@ class TransactionSetupController extends Controller
   {
     $this->validation_rules($request);
 
-    $asset_type=$request->input();
-    AssetType::create($asset_type);
+    $tipe = $request->input('type_master');
+    $name = '';
+    $data=$request->input();
+    if ($tipe == '0') {
+        $name = 'Master Kondisi';
+          TransCondition::create($data);
+    } elseif ($tipe == '1') {
+      $name = 'Master Satuan';
+        TransUnit::create($data);
+    } elseif ($tipe == '2') {
+      $name = 'Master Status Tanah';
+        TransStatusLand::create($data);
+    } elseif ($tipe == '3') {
+      $name = 'Master Status Sertifikat';
+        TransStatusCert::create($data);
+    } elseif ($tipe == '4') {
+      $name = 'Master Status Bangunan';
+        TransStatusBuilding::create($data);
+    } elseif ($tipe == '5') {
+      $name = 'Master Dana Perolehan';
+        TransInvestor::create($data);
+    } elseif ($tipe == '6') {
+      $name = 'Master Golongan';
+        TransGol::create($data);
+    } elseif ($tipe == '7') {
+      $name = 'Master Peruntukan Kendaraan';
+        TransForVehicle::create($data);
+    } elseif ($tipe == '8') {
+      $name = 'Master Peruntukan Tanah';
+        TransForLand::create($data);
+    } elseif ($tipe == '9') {
+      $name = 'Master Peruntukan Bangunan';
+        TransForBuilding::create($data);
+    } elseif ($tipe == '10') {
+      $name = 'Master Status Barang';
+        TransStatusItem::create($data);
+    }
 
-    Session::flash('flash_message', 'Data berhasil ditambahkan!');
+    Session::flash('flash_message', 'Data '.$name.' berhasil ditambahkan!');
 
-    return redirect('master/asset_type');
+    return redirect('transaction/master/setup');
   }
 
   public function trans_condition()
