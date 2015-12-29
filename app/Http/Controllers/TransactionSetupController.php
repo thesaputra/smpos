@@ -26,6 +26,24 @@ class TransactionSetupController extends Controller
     return view('transaction_setups.index');
   }
 
+
+  public function create()
+  {
+      return view('transaction_setups.create');
+  }
+
+  public function store(Request $request)
+  {
+    $this->validation_rules($request);
+
+    $asset_type=$request->input();
+    AssetType::create($asset_type);
+
+    Session::flash('flash_message', 'Data berhasil ditambahkan!');
+
+    return redirect('master/asset_type');
+  }
+
   public function trans_condition()
   {
     \DB::statement(\DB::raw('set @rownum=0'));
@@ -194,5 +212,12 @@ class TransactionSetupController extends Controller
       ';
     })
     ->make(true);
+  }
+
+  private function validation_rules($request)
+  {
+    $this->validate($request, [
+      'name' => 'required'
+    ]);
   }
 }

@@ -4,26 +4,32 @@
 <div class="row">
   <div class="col-lg-12">
     <h2 class="page-header">Laporan
-      <small>Transaksi - sallary</small>
+      <small>Transaksi - Barang</small>
     </h2>
-    {!! Form::open(['route' => 'admin.report.process']) !!}
+    {!! Form::open(['route' => 'report.process_item']) !!}
     <div class="row">
       <div class="col-md-3">
         <div class="form-group">
-          {!! Form::label('date_start', 'Mulai:') !!}
-          {!! Form::text('date_start',null,['id'=>'date-start','class'=>'form-control','required'=>'true']) !!}
+          {!! Form::label('date_amount', 'Mulai:') !!}
+          {!! Form::text('date_amount',null,['id'=>'date-start','class'=>'form-control','required'=>'true']) !!}
         </div>
       </div>
       <div class="col-md-3">
         <div class="form-group">
-          {!! Form::label('date_end', 'Akhir:') !!}
-          {!! Form::text('date_end',null,['id'=>'date-end','class'=>'form-control','required'=>'true']) !!}
+          {!! Form::label('date_amount', 'Akhir:') !!}
+          {!! Form::text('date_amount',null,['id'=>'date-end','class'=>'form-control','required'=>'true']) !!}
         </div>
       </div>
       <div class="col-md-3">
         <div class="form-group">
-          {!! Form::label('user_id', 'Petugas:') !!}
-          {!! Form::select('user_id', $user, null, ['class' => 'form-control']) !!}
+          {!! Form::label('asset_categories_id', 'Asset Kategori:') !!}
+          {!! Form::select('asset_categories_id', $asset_category, null, ['class' => 'form-control']) !!}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          {!! Form::label('user_id', 'Office/Regional:') !!}
+          {!! Form::select('user_id', $user_office_regional, null, ['class' => 'form-control']) !!}
         </div>
       </div>
       <div class="col-md-3">

@@ -78,8 +78,8 @@ class PlacingController extends Controller
 
   public function create()
   {
-    $current_office_id = Auth::user()->office_id;
-    $current_division_id = Auth::user()->division;
+    $current_office_id = Auth::user()->office_region_id;
+    $current_division_id = Auth::user()->division_kprk_id;
 
     $valid_office = Office::where('id', $current_office_id)->first()->name;
     $valid_division = OfficeDivision::where('id', $current_division_id)->first()->name;

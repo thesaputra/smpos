@@ -29,6 +29,21 @@ Route::post('divisi_kprk_select', [
   'roles' => ['Admin', 'Managerial','Petugas']
 ]);
 
+Route::group(array('prefix' => 'report'),function() {
+  Route::get('report/tipe_barang', [
+       'middleware' => ['auth', 'roles'],
+       'as' => 'report.barang',
+       'uses' => 'ReportController@index',
+       'roles' => ['Admin', 'Managerial','Petugas']
+   ]);
+
+   Route::post('report/process_item', [
+        'middleware' => ['auth', 'roles'],
+        'as' => 'report.process_item',
+        'uses' => 'ReportController@process_item',
+        'roles' => ['Admin', 'Managerial','Petugas']
+    ]);
+});
 
 Route::group(array('prefix' => 'mutation'),function() {
 
@@ -207,77 +222,92 @@ Route::group(array('prefix' => 'placing'),function() {
 });
 
 Route::group(array('prefix' => 'transaction'),function() {
-  Route::get('setup', [
+
+Route::get('master/create', [
+    'middleware' => ['auth', 'roles'],
+    'as' => 'transaction.setup.create',
+    'uses' => 'TransactionSetupController@create',
+    'roles' => ['Admin', 'Managerial','Petugas']
+]);
+
+Route::post('master/store', [
+    'middleware' => ['auth', 'roles'],
+    'as' => 'transaction.setup.store',
+    'uses' => 'TransactionSetupController@store',
+    'roles' => ['Admin', 'Managerial','Petugas']
+]);
+
+  Route::get('master/setup', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup',
       'uses' => 'TransactionSetupController@index',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/condition', [
+  Route::get('master/setup/condition', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.condition',
       'uses' => 'TransactionSetupController@trans_condition',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/unit', [
+  Route::get('master/setup/unit', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.unit',
       'uses' => 'TransactionSetupController@trans_unit_data',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/statusland', [
+  Route::get('master/setup/statusland', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.statusland',
       'uses' => 'TransactionSetupController@trans_status_land',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/statuscert', [
+  Route::get('master/setup/statuscert', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.statuscert',
       'uses' => 'TransactionSetupController@trans_status_cert',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/statusbuildings', [
+  Route::get('master/setup/statusbuildings', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.statusbuildings',
       'uses' => 'TransactionSetupController@trans_status_building',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/investors', [
+  Route::get('master/setup/investors', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.investors',
       'uses' => 'TransactionSetupController@trans_investor',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/gols', [
+  Route::get('master/setup/gols', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.gols',
       'uses' => 'TransactionSetupController@trans_gol',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/forvehicles', [
+  Route::get('master/setup/forvehicles', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.forvehicles',
       'uses' => 'TransactionSetupController@trans_for_vehicle',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/forlands', [
+  Route::get('master/setup/forlands', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.forlands',
       'uses' => 'TransactionSetupController@trans_for_land',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('setup/forbuildings', [
+  Route::get('master/setup/forbuildings', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.forbuildings',
       'uses' => 'TransactionSetupController@trans_for_building',

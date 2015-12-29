@@ -9,11 +9,8 @@ use App\Models\Transaction;
 use App\Models\Package;
 use App\Models\Item;
 use App\User;
-use App\Models\TransactionDetail;
-use App\Models\PaymentHistory;
-use App\Models\TransactionItem;
-use App\Models\TransactionUser;
-use App\Models\Customer;
+use App\Models\AssetCategory;
+use App\Models\AssetType;
 
 use Yajra\Datatables\Datatables;
 
@@ -23,9 +20,10 @@ class ReportController extends Controller
 {
   public function index()
   {
-    $user = User::lists('name', 'id');
+    $user_office_regional = User::lists('name', 'id');
+    $asset_category = AssetType::lists('name', 'id');
 
-    return view('reports.index',compact(['user']));
+    return view('reports.index',compact(['user_office_regional','asset_category']));
   }
 
   public function daily()
@@ -33,7 +31,7 @@ class ReportController extends Controller
     return view('reports.daily');
   }
 
-  public function process(Request $request)
+  public function process_item(Request $request)
   {
     $date_start = $this->saved_date_format($request->input('date_start'));
     $date_end = $this->saved_date_format($request->input('date_end'));
