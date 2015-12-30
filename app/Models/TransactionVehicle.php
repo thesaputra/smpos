@@ -11,7 +11,7 @@ class TransactionVehicle extends Model
   protected $fillable = array('asset_categories_id','trans_gol_id','trans_forvehicle_id','index','mdsap',
                               'model_vechicle','name','merk','type_vechicle','no_police','no_rangka','no_machine',
                               'year_production','silinder','color_kb','color_tnkb','bahan_bakar','date_kir',
-                              'date_tax','amount','date_amount','doc_bpkb','doc_stnk','description');
+                              'date_tax','amount','date_amount','doc_bpkb','doc_stnk','description','user_id');
   protected $hidden = ['id', 'created_at', 'updated_at'];
 
 

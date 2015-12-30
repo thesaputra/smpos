@@ -9,6 +9,7 @@
             {!! Form::label('index', 'Index:') !!}
             {!! Form::text('indexx','Auto Generate',['class'=>'form-control','readonly'=>'true']) !!}
             {!! Form::hidden('asset_categories_id',$ac_id,['class'=>'form-control']) !!}
+            {!! Form::hidden('user_id',Auth::user()->id,['class'=>'form-control']) !!}
         </div>
         <div class="form-group">
             {!! Form::label('mdsap', 'MD SAP:') !!}

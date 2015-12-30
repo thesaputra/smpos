@@ -10,7 +10,7 @@ class TransactionPropbuilding extends Model
   protected $primarykey = 'id';
   protected $fillable = array('asset_categories_id','trans_gol_id','trans_investors_id','trans_forbuilding_id',
                               'trans_statusbuilding_id','index','mdsap','name','index_tanah','lat','lang',
-                              'building_ha','amount','date_amount','floors','doc_building','description');
+                              'building_ha','amount','date_amount','floors','doc_building','description','user_id');
   protected $hidden = ['id', 'created_at', 'updated_at'];
 
 

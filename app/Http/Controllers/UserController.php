@@ -170,7 +170,7 @@ class UserController extends Controller
   */
   public function update(Request $request, $id)
   {
-    $this->validation_rules($request);
+    $this->update_validation_rules($request);
 
     $password = bcrypt($request->input('password'));
     $request->merge(array('password'=>$password));
@@ -206,6 +206,15 @@ class UserController extends Controller
     $this->validate($request, [
       'name' => 'required',
       'email' => 'required|unique:users',
+      'password' => 'required'
+    ]);
+  }
+
+  private function update_validation_rules($request)
+  {
+    $this->validate($request, [
+      'name' => 'required',
+      'email' => 'required',
       'password' => 'required'
     ]);
   }

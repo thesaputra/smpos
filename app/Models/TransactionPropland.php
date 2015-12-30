@@ -10,7 +10,7 @@ class TransactionPropland extends Model
   protected $primarykey = 'id';
   protected $fillable = array('asset_categories_id','trans_gol_id','trans_investors_id','trans_forland_id',
                               'trans_statuscert_id','trans_statusland_id','index','mdsap','name','no_cert','date_cert','date_expired_cert',
-                              'name_owner','amount','date_amount','land_ha','lat','lang','doc_land','description');
+                              'name_owner','amount','date_amount','land_ha','lat','lang','doc_land','description','user_id');
   protected $hidden = ['id', 'created_at', 'updated_at'];
 
 
