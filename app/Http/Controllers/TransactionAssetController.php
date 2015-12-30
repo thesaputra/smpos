@@ -31,6 +31,7 @@ use App\Models\TransactionPropbuilding;
 
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
+use Auth;
 
 class TransactionAssetController extends Controller
 {
@@ -47,7 +48,7 @@ class TransactionAssetController extends Controller
       'id',
       'index',
       'name'
-    ]);
+    ])->where('user_id','=', Auth::user()->id);
     return Datatables::of($datas)
     ->addColumn('action', function ($data) {
       return '
@@ -66,7 +67,7 @@ class TransactionAssetController extends Controller
       'id',
       'index',
       'name'
-    ]);
+    ])->where('user_id','=', Auth::user()->id);
     return Datatables::of($datas)
     ->addColumn('action', function ($data) {
       return '
@@ -85,7 +86,7 @@ class TransactionAssetController extends Controller
       'id',
       'index',
       'name'
-    ]);
+    ])->where('user_id','=', Auth::user()->id);
     return Datatables::of($datas)
     ->addColumn('action', function ($data) {
       return '
@@ -104,163 +105,165 @@ class TransactionAssetController extends Controller
       'id',
       'index',
       'name'
-    ]);
-    return Datatables::of($datas)
-    ->addColumn('action', function ($data) {
-      return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-      <a href="#" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-edit"></i> View</a>
-      ';
-    })
-    ->make(true);
-  }
-
-  public function transnew_autocomplete(Request $request)
-  {
-    $term = $request->term;
-
-    $results = array();
-
-    $queries = \DB::table('asset_categories')
-    ->where('code', 'LIKE', '%'.$term.'%')
-    ->take(10)->get();
-
-    foreach ($queries as $query)
-    {
-      $results[] = [ 'id' => $query->id, 'code' => $query->code ];
+      ])->where('user_id','=', Auth::user()->id);
+      return Datatables::of($datas)
+      ->addColumn('action', function ($data) {
+        return '
+        <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+        <a href="#" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-edit"></i> View</a>
+        ';
+      })
+      ->make(true);
     }
 
-    return response()->json($results);
-  }
+    public function transnew_autocomplete(Request $request)
+    {
+      $term = $request->term;
 
-  public function index()
-  {
-    return view('transaction_assets.new');
-  }
+      $results = array();
 
-  public function process(Request $request)
-  {
-    $cat_asset = $request->input('code_cat_asset');
+      $queries = \DB::table('asset_categories')
+      ->where('code', 'LIKE', '%'.$term.'%')
+      ->take(10)->get();
 
-    $valid_asset = AssetCategory::where('asset_categories.code', $cat_asset)
-    ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
-    ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
-    ->first();
-
-    if ($valid_asset) {
-      if ($valid_asset->at_code == 100 || ($valid_asset->at_code >= 400))
+      foreach ($queries as $query)
       {
-        return redirect()->route('transaction.create_item',$valid_asset->ac_id);
+        $results[] = [ 'id' => $query->id, 'code' => $query->code ];
       }
-      if ($valid_asset->at_code == 200)
-      {
-        return redirect()->route('transaction.create_vehicle',$valid_asset->ac_id);
-      }
-      if ($valid_asset->at_code == 300)
-      {
-        if ($valid_asset->ac_code == 301)
+
+      return response()->json($results);
+    }
+
+    public function index()
+    {
+      return view('transaction_assets.new');
+    }
+
+    public function process(Request $request)
+    {
+      $cat_asset = $request->input('code_cat_asset');
+
+      $valid_asset = AssetCategory::where('asset_categories.code', $cat_asset)
+      ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
+      ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
+      ->first();
+
+      if ($valid_asset) {
+        if ($valid_asset->at_code == 100 || ($valid_asset->at_code >= 400))
         {
-          return redirect()->route('transaction.create_propland',$valid_asset->ac_id);
+          return redirect()->route('transaction.create_item',$valid_asset->ac_id);
         }
-        elseif ($valid_asset->ac_code == 302) {
-          $tipe = 'Gedung';
-          $code = $valid_asset->ac_code;
-          return redirect()->route('transaction.create_propbuilding',compact('code','tipe'));
-        } else {
-          $tipe = 'Rumah Dinas';
+        if ($valid_asset->at_code == 200)
+        {
+          return redirect()->route('transaction.create_vehicle',$valid_asset->ac_id);
+        }
+        if ($valid_asset->at_code == 300)
+        {
+          if ($valid_asset->ac_code == 301)
+          {
+            return redirect()->route('transaction.create_propland',$valid_asset->ac_id);
+          }
+          elseif ($valid_asset->ac_code == 302) {
+            $tipe = 'Gedung';
             $code = $valid_asset->ac_code;
-          return redirect()->route('transaction.create_propbuilding',compact('code','tipe'));
+            return redirect()->route('transaction.create_propbuilding',compact('code','tipe'));
+          } else {
+            $tipe = 'Rumah Dinas';
+            $code = $valid_asset->ac_code;
+            return redirect()->route('transaction.create_propbuilding',compact('code','tipe'));
+          }
         }
       }
+      else
+      {
+        Session::flash('flash_message', 'Kategori asset: '.$cat_asset.' tidak ditemukan. Periksa referensi asset');
+        return redirect()->back();
+      }
+
+
     }
-    else
+
+    public function create_item($ac_id)
     {
-      Session::flash('flash_message', 'Kategori asset: '.$cat_asset.' tidak ditemukan. Periksa referensi asset');
-      return redirect()->back();
+      $conditions = TransCondition::lists('name', 'id');
+      $golongan = TransGol::lists('name', 'id');
+      $investors = TransInvestor::lists('name', 'id');
+      $units = TransUnit::lists('name', 'id');
+
+      return view('transaction_assets.create_item',compact('ac_id','conditions','golongan','investors','units'));
     }
 
+    public function create_vehicle($ac_id)
+    {
+      $vehicles = TransForVehicle::lists('name', 'id');
+      $golongan = TransGol::lists('name', 'id');
+      $investors = TransInvestor::lists('name', 'id');
+      $units = TransUnit::lists('name', 'id');
 
-  }
+      return view('transaction_assets.create_vehicle',compact('ac_id','vehicles','golongan','investors','units'));
+    }
 
-  public function create_item($ac_id)
-  {
-    $conditions = TransCondition::lists('name', 'id');
-    $golongan = TransGol::lists('name', 'id');
-    $investors = TransInvestor::lists('name', 'id');
-    $units = TransUnit::lists('name', 'id');
+    public function create_propland($ac_id)
+    {
+      $golongan = TransGol::lists('name', 'id');
+      $investors = TransInvestor::lists('name', 'id');
+      $status_sertifikat = TransStatusCert::lists('name', 'id');
+      $forlands = TransForLand::lists('name', 'id');
+      $statuslands = TransStatusLand::lists('name', 'id');
 
-    return view('transaction_assets.create_item',compact('ac_id','conditions','golongan','investors','units'));
-  }
+      return view('transaction_assets.create_propland',compact('ac_id','golongan','investors','status_sertifikat','forlands','statuslands'));
+    }
 
-  public function create_vehicle($ac_id)
-  {
-    $vehicles = TransForVehicle::lists('name', 'id');
-    $golongan = TransGol::lists('name', 'id');
-    $investors = TransInvestor::lists('name', 'id');
-    $units = TransUnit::lists('name', 'id');
+    public function create_propbuilding($ac_id,$tipe)
+    {
+      $golongan = TransGol::lists('name', 'id');
+      $investors = TransInvestor::lists('name', 'id');
+      $status_sertifikat = TransStatusCert::lists('name', 'id');
+      $forbuildings = TransForBuilding::lists('name', 'id');
+      $statusbuildings = TransStatusBuilding::lists('name', 'id');
+      $index_tanah = TransactionPropland::lists('index','index');
+      return view('transaction_assets.create_propbuilding',compact('tipe','ac_id','golongan','investors','forbuildings','statusbuildings','index_tanah'));
+    }
 
-    return view('transaction_assets.create_vehicle',compact('ac_id','vehicles','golongan','investors','units'));
-  }
+    public function store_item(Request $request)
+    {
+      $date_amount = $this->saved_date_format($request->input('date_amount'));
+      $param_ac_id = $request->input('asset_categories_id');
 
-  public function create_propland($ac_id)
-  {
-    $golongan = TransGol::lists('name', 'id');
-    $investors = TransInvestor::lists('name', 'id');
-    $status_sertifikat = TransStatusCert::lists('name', 'id');
-    $forlands = TransForLand::lists('name', 'id');
-    $statuslands = TransStatusLand::lists('name', 'id');
+      $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
+      ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
+      ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
+      ->first();
 
-    return view('transaction_assets.create_propland',compact('ac_id','golongan','investors','status_sertifikat','forlands','statuslands'));
-  }
+      $kode_kategori = $valid_asset->ac_code;
+      $kode_pengelompokan =  $request->input('trans_gol_id');
+      $tahun = Carbon::now()->toDateTimeString();
+      $format = Carbon::parse($tahun)->format('y');
+      $no_urut = TransactionItem::where('asset_categories_id', $param_ac_id)->get()->count();
 
-  public function create_propbuilding($ac_id,$tipe)
-  {
-    $golongan = TransGol::lists('name', 'id');
-    $investors = TransInvestor::lists('name', 'id');
-    $status_sertifikat = TransStatusCert::lists('name', 'id');
-    $forbuildings = TransForBuilding::lists('name', 'id');
-    $statusbuildings = TransStatusBuilding::lists('name', 'id');
-    $index_tanah = TransactionPropland::lists('index','index');
-    return view('transaction_assets.create_propbuilding',compact('tipe','ac_id','golongan','investors','forbuildings','statusbuildings','index_tanah'));
-  }
-
-  public function store_item(Request $request)
-  {
-    $date_amount = $this->saved_date_format($request->input('date_amount'));
-    $param_ac_id = $request->input('asset_categories_id');
-
-    $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
-    ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
-    ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
-    ->first();
-
-    $kode_kategori = $valid_asset->ac_code;
-    $kode_pengelompokan =  $request->input('trans_gol_id');
-    $tahun = Carbon::now()->toDateTimeString();
-    $format = Carbon::parse($tahun)->format('y');
-    $no_urut = TransactionItem::where('asset_categories_id', $param_ac_id)->get()->count();
-
-    $before_urut = '000';
-    if ($no_urut > 9) {
       $before_urut = '000';
-    } elseif ($no_urut > 99) {
-      $before_urut = '00';
-    } elseif ($no_urut > 999) {
-      $before_urut = '0';
+      if ($no_urut > 9) {
+        $before_urut = '000';
+      } elseif ($no_urut > 99) {
+        $before_urut = '00';
+      } elseif ($no_urut > 999) {
+        $before_urut = '0';
+      }
+
+      $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
+      $request->merge(array('date_amount'=>$date_amount, 'index' => $new_index));
+
+      $transaction_item=$request->input();
+      $save_trans = TransactionItem::create($transaction_item);
+
+      if ($request->file('url_photo') != '') {
+        $imageName = $save_trans->id . '-barang.' .
+        $request->file('url_photo')->getClientOriginalExtension();
+
+        $request->file('url_photo')->move(
+        base_path() . '/public/images/transaksi/barang/', $imageName
+      );
     }
-
-    $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
-    $request->merge(array('date_amount'=>$date_amount, 'index' => $new_index));
-
-    $transaction_item=$request->input();
-    $save_trans = TransactionItem::create($transaction_item);
-
-    $imageName = $save_trans->id . '-barang.' .
-    $request->file('url_photo')->getClientOriginalExtension();
-
-     $request->file('url_photo')->move(
-         base_path() . '/public/images/transaksi/barang/', $imageName
-     );
 
     Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
@@ -302,165 +305,173 @@ class TransactionAssetController extends Controller
     $transaction_vehicle=$request->input();
     $save_trans = TransactionVehicle::create($transaction_vehicle);
 
-    $imageName = $save_trans->id . '-kendaraan.' .
-    $request->file('url_photo')->getClientOriginalExtension();
+    if ($request->file('url_photo') != '') {
+      $imageName = $save_trans->id . '-kendaraan.' .
+      $request->file('url_photo')->getClientOriginalExtension();
 
-     $request->file('url_photo')->move(
-         base_path() . '/public/images/transaksi/kendaraan/', $imageName
-     );
-
-    Session::flash('flash_message', 'Data asset berhasil ditambahkan');
-
-    return redirect()->back();
+      $request->file('url_photo')->move(
+      base_path() . '/public/images/transaksi/kendaraan/', $imageName
+    );
   }
 
-  public function store_propland(Request $request)
-  {
-    $date_amount = $this->saved_date_format($request->input('date_amount'));
-    $date_cert = $this->saved_date_format($request->input('date_cert'));
-    $date_expired_cert = $this->saved_date_format($request->input('date_expired_cert'));
+  Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
-    $param_ac_id = $request->input('asset_categories_id');
+  return redirect()->back();
+}
 
-    $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
-    ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
-    ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
-    ->first();
+public function store_propland(Request $request)
+{
+  $date_amount = $this->saved_date_format($request->input('date_amount'));
+  $date_cert = $this->saved_date_format($request->input('date_cert'));
+  $date_expired_cert = $this->saved_date_format($request->input('date_expired_cert'));
 
-    $kode_kategori = $valid_asset->ac_code;
-    $kode_pengelompokan =  $request->input('trans_gol_id');
-    $tahun = Carbon::now()->toDateTimeString();
-    $format = Carbon::parse($tahun)->format('y');
-    $no_urut = TransactionPropland::where('asset_categories_id', $param_ac_id)->get()->count();
+  $param_ac_id = $request->input('asset_categories_id');
 
+  $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
+  ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
+  ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
+  ->first();
+
+  $kode_kategori = $valid_asset->ac_code;
+  $kode_pengelompokan =  $request->input('trans_gol_id');
+  $tahun = Carbon::now()->toDateTimeString();
+  $format = Carbon::parse($tahun)->format('y');
+  $no_urut = TransactionPropland::where('asset_categories_id', $param_ac_id)->get()->count();
+
+  $before_urut = '000';
+  if ($no_urut > 9) {
     $before_urut = '000';
-    if ($no_urut > 9) {
-      $before_urut = '000';
-    } elseif ($no_urut > 99) {
-      $before_urut = '00';
-    } elseif ($no_urut > 999) {
-      $before_urut = '0';
-    }
+  } elseif ($no_urut > 99) {
+    $before_urut = '00';
+  } elseif ($no_urut > 999) {
+    $before_urut = '0';
+  }
 
-    $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
-    $request->merge(array('date_amount'=>$date_amount,'date_cert'=>$date_cert,'date_expired_cert'=>$date_expired_cert, 'index' => $new_index));
+  $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
+  $request->merge(array('date_amount'=>$date_amount,'date_cert'=>$date_cert,'date_expired_cert'=>$date_expired_cert, 'index' => $new_index));
 
-    $transaction_propland=$request->input();
-    $save_trans = TransactionPropland::create($transaction_propland);
+  $transaction_propland=$request->input();
+  $save_trans = TransactionPropland::create($transaction_propland);
+
+  if ($request->file('url_photo') != '') {
 
     $imageName = $save_trans->id . '-tanah.' .
     $request->file('url_photo')->getClientOriginalExtension();
 
-     $request->file('url_photo')->move(
-         base_path() . '/public/images/transaksi/tanah/', $imageName
-     );
+    $request->file('url_photo')->move(
+    base_path() . '/public/images/transaksi/tanah/', $imageName
+  );
+}
 
-    Session::flash('flash_message', 'Data asset berhasil ditambahkan');
+Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
-    return redirect()->back();
+return redirect()->back();
+}
+
+public function store_propbuilding(Request $request)
+{
+  $date_amount = $this->saved_date_format($request->input('date_amount'));
+
+  $param_ac_id = $request->input('asset_categories_id');
+
+  $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
+  ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
+  ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
+  ->first();
+
+  $kode_kategori = $valid_asset->ac_code;
+  $kode_pengelompokan =  $request->input('trans_gol_id');
+  $tahun = Carbon::now()->toDateTimeString();
+  $format = Carbon::parse($tahun)->format('y');
+  $no_urut = TransactionPropbuilding::where('asset_categories_id', $param_ac_id)->get()->count();
+
+  $before_urut = '000';
+  if ($no_urut > 9) {
+    $before_urut = '000';
+  } elseif ($no_urut > 99) {
+    $before_urut = '00';
+  } elseif ($no_urut > 999) {
+    $before_urut = '0';
   }
 
-  public function store_propbuilding(Request $request)
-  {
-    $date_amount = $this->saved_date_format($request->input('date_amount'));
+  $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
+  $request->merge(array('date_amount'=>$date_amount, 'index' => $new_index));
 
-    $param_ac_id = $request->input('asset_categories_id');
+  $transaction_building=$request->input();
+  $save_trans = TransactionPropbuilding::create($transaction_building);
 
-    $valid_asset = AssetCategory::where('asset_categories.id', $param_ac_id)
-    ->join('asset_types','asset_types.id','=','asset_categories.asset_type_id')
-    ->select('asset_categories.id as ac_id','asset_types.code as at_code','asset_categories.code as ac_code')
-    ->first();
-
-    $kode_kategori = $valid_asset->ac_code;
-    $kode_pengelompokan =  $request->input('trans_gol_id');
-    $tahun = Carbon::now()->toDateTimeString();
-    $format = Carbon::parse($tahun)->format('y');
-    $no_urut = TransactionPropbuilding::where('asset_categories_id', $param_ac_id)->get()->count();
-
-    $before_urut = '000';
-    if ($no_urut > 9) {
-      $before_urut = '000';
-    } elseif ($no_urut > 99) {
-      $before_urut = '00';
-    } elseif ($no_urut > 999) {
-      $before_urut = '0';
-    }
-
-    $new_index = $kode_kategori.$kode_pengelompokan.$format.$before_urut.$no_urut+1;
-    $request->merge(array('date_amount'=>$date_amount, 'index' => $new_index));
-
-    $transaction_building=$request->input();
-    $save_trans = TransactionPropbuilding::create($transaction_building);
+  if ($request->file('url_photo') != '') {
 
     $imageName = $save_trans->id . '-bangunan.' .
     $request->file('url_photo')->getClientOriginalExtension();
 
-     $request->file('url_photo')->move(
-         base_path() . '/public/images/transaksi/bangunan/', $imageName
-     );
+    $request->file('url_photo')->move(
+    base_path() . '/public/images/transaksi/bangunan/', $imageName
+  );
+}
 
-    Session::flash('flash_message', 'Data asset berhasil ditambahkan');
+Session::flash('flash_message', 'Data asset berhasil ditambahkan');
 
-    return redirect()->back();
-  }
+return redirect()->back();
+}
 
 
 
-  /**
-  * Display the specified resource.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function show($id)
-  {
-    //
-  }
+/**
+* Display the specified resource.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function show($id)
+{
+  //
+}
 
-  /**
-  * Show the form for editing the specified resource.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function edit($id)
-  {
-    //
-  }
+/**
+* Show the form for editing the specified resource.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function edit($id)
+{
+  //
+}
 
-  /**
-  * Update the specified resource in storage.
-  *
-  * @param  \Illuminate\Http\Request  $request
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function update(Request $request, $id)
-  {
-    //
-  }
+/**
+* Update the specified resource in storage.
+*
+* @param  \Illuminate\Http\Request  $request
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function update(Request $request, $id)
+{
+  //
+}
 
-  /**
-  * Remove the specified resource from storage.
-  *
-  * @param  int  $id
-  * @return \Illuminate\Http\Response
-  */
-  public function destroy($id)
-  {
-    //
-  }
+/**
+* Remove the specified resource from storage.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function destroy($id)
+{
+  //
+}
 
-  private function saved_date_format($date)
-  {
-    $date_split = explode('/',$date);
+private function saved_date_format($date)
+{
+  $date_split = explode('/',$date);
 
-    $year = $date_split[2];
-    $month = $date_split[1];
-    $day = $date_split[0];
+  $year = $date_split[2];
+  $month = $date_split[1];
+  $day = $date_split[0];
 
-    $format = $year.'-'.$month.'-'.$day;
+  $format = $year.'-'.$month.'-'.$day;
 
-    return $format;
-  }
+  return $format;
+}
 }
