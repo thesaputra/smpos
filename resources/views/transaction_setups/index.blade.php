@@ -50,7 +50,7 @@
   <i class="fa fa-user"></i>Peruntukan Bangunan
 </a>
 </li>
-<li style="font-size:12px"><a href="#" role="tab" data-toggle="tab" data-remote="setup/forbuildings" class="get_data">
+<li style="font-size:12px"><a href="#" role="tab" data-toggle="tab" data-remote="setup/statusitems" class="get_data">
   <i class="fa fa-user"></i>Status Barang
 </a>
 </li>
@@ -79,6 +79,26 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+  $('#datas-table').on('click', '#btn-delete[data-remote]', function (e) {
+    e.preventDefault();
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': '{!! csrf_token() !!}'
+        }
+      });
+      var url = $(this).data('remote');
+      if (confirm('Anda yakin?')) {
+        $.ajax({
+          url: url,
+          type: 'DELETE',
+          dataType: 'json',
+          data: {method: '_DELETE', submit: true}
+        }).always(function (data) {
+          $('#datas-table').DataTable().draw(false);
+        });
+      }
+    });
+
   $('.get_data').on('click', function (e) {
     var urldata = $(this).data('remote');
     e.preventDefault();

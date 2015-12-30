@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransStatusItem extends Model
 {
-  protected $table = 'trans_status_items';
+  protected $table = 'trans_statusitems';
   protected $primarykey = 'id';
   protected $fillable = array('name');
   protected $hidden = ['id', 'created_at', 'updated_at'];

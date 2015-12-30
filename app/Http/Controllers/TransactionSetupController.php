@@ -16,7 +16,7 @@ use App\Models\TransForVehicle;
 use App\Models\TransForLand;
 use App\Models\TransForBuilding;
 use App\Models\TransCondition;
-use App\Models\TransItem;
+use App\Models\TransStatusItem;
 
 
 use Yajra\Datatables\Datatables;
@@ -31,7 +31,7 @@ class TransactionSetupController extends Controller
 
   public function create()
   {
-      return view('transaction_setups.create');
+    return view('transaction_setups.create');
   }
 
   public function store(Request $request)
@@ -42,44 +42,87 @@ class TransactionSetupController extends Controller
     $name = '';
     $data=$request->input();
     if ($tipe == '0') {
-        $name = 'Master Kondisi';
-          TransCondition::create($data);
+      $name = 'Master Kondisi';
+      TransCondition::create($data);
     } elseif ($tipe == '1') {
       $name = 'Master Satuan';
-        TransUnit::create($data);
+      TransUnit::create($data);
     } elseif ($tipe == '2') {
       $name = 'Master Status Tanah';
-        TransStatusLand::create($data);
+      TransStatusLand::create($data);
     } elseif ($tipe == '3') {
       $name = 'Master Status Sertifikat';
-        TransStatusCert::create($data);
+      TransStatusCert::create($data);
     } elseif ($tipe == '4') {
       $name = 'Master Status Bangunan';
-        TransStatusBuilding::create($data);
+      TransStatusBuilding::create($data);
     } elseif ($tipe == '5') {
       $name = 'Master Dana Perolehan';
-        TransInvestor::create($data);
+      TransInvestor::create($data);
     } elseif ($tipe == '6') {
       $name = 'Master Golongan';
-        TransGol::create($data);
+      TransGol::create($data);
     } elseif ($tipe == '7') {
       $name = 'Master Peruntukan Kendaraan';
-        TransForVehicle::create($data);
+      TransForVehicle::create($data);
     } elseif ($tipe == '8') {
       $name = 'Master Peruntukan Tanah';
-        TransForLand::create($data);
+      TransForLand::create($data);
     } elseif ($tipe == '9') {
       $name = 'Master Peruntukan Bangunan';
-        TransForBuilding::create($data);
+      TransForBuilding::create($data);
     } elseif ($tipe == '10') {
       $name = 'Master Status Barang';
-        TransStatusItem::create($data);
+      TransStatusItem::create($data);
     }
 
     Session::flash('flash_message', 'Data '.$name.' berhasil ditambahkan!');
 
     return redirect('transaction/master/setup');
   }
+
+  public function destroy($id,$tipe)
+  {
+    if ($tipe == 'condition') {
+      $data = TransCondition::findOrFail($id);
+      $data->delete();
+    } elseif ($tipe == 'for_land') {
+      $data = TransForLand::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'for_vehicle') {
+      $data = TransForVehicle::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'for_building') {
+      $data = TransForBuilding::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'status_cert') {
+      $data = TransStatusCert::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'status_land') {
+      $data = TransStatusLand::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'investor') {
+      $data = TransInvestor::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'gol') {
+      $data = TransGol::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'unit') {
+      $data = TransUnit::findOrFail($id);
+      $data->delete();
+    }elseif ($tipe == 'status_building') {
+      $data = TransStatusBuilding::findOrFail($id);
+      $data->delete();
+    }
+    elseif ($tipe == 'status_item') {
+      $data = TransStatusItem::findOrFail($id);
+      $data->delete();
+    }
+
+    Session::flash('flash_message', 'Data berhasil dihapus');
+    return redirect()->back();
+  }
+
 
   public function trans_condition()
   {
@@ -92,7 +135,7 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_conditions)
     ->addColumn('action', function ($trans_condition) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_condition->id .'/'.'condition'. '">Delete</button>
       ';
     })
     ->make(true);
@@ -109,7 +152,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_for_buildings)
     ->addColumn('action', function ($trans_for_building) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_for_building->id .'/'.'for_building'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -126,7 +170,7 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_for_lands)
     ->addColumn('action', function ($trans_for_land) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_for_land->id .'/'.'for_land'. '">Delete</button>
       ';
     })
     ->make(true);
@@ -143,7 +187,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_for_vehicles)
     ->addColumn('action', function ($trans_for_vehicle) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_for_vehicle->id .'/'.'for_vehicle'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -160,7 +205,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_gols)
     ->addColumn('action', function ($trans_gol) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_gol->id .'/'.'gol'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -177,7 +223,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_investors)
     ->addColumn('action', function ($trans_investor) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_investor->id .'/'.'investor'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -194,7 +241,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_units)
     ->addColumn('action', function ($trans_unit) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_unit->id .'/'.'unit'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -211,7 +259,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_status_lands)
     ->addColumn('action', function ($trans_status_land) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_status_land->id .'/'.'status_land'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -228,7 +277,8 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_status_certs)
     ->addColumn('action', function ($trans_status_cert) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_status_cert->id .'/'.'status_cert'. '">Delete</button>
+
       ';
     })
     ->make(true);
@@ -245,7 +295,26 @@ class TransactionSetupController extends Controller
     return Datatables::of($trans_status_buildings)
     ->addColumn('action', function ($trans_status_building) {
       return '
-      <a href="#" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_status_building->id .'/'.'status_building'. '">Delete</button>
+
+      ';
+    })
+    ->make(true);
+  }
+
+  public function trans_status_item()
+  {
+    \DB::statement(\DB::raw('set @rownum=0'));
+    $trans_status_items = TransStatusItem::select([
+      \DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+      'id',
+      'name'
+    ]);
+    return Datatables::of($trans_status_items)
+    ->addColumn('action', function ($trans_status_item) {
+      return '
+      <button id="btn-delete" class="btn btn-xs btn-danger" data-remote="./destroy/' . $trans_status_item->id .'/'.'status_item'. '">Delete</button>
+
       ';
     })
     ->make(true);

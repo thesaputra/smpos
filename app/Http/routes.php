@@ -237,6 +237,13 @@ Route::post('master/store', [
     'roles' => ['Admin', 'Managerial','Petugas']
 ]);
 
+Route::delete('master/destroy/{id}/{tipe}', [
+    'middleware' => ['auth', 'roles'],
+    'as' => 'transaction.setup.delete',
+    'uses' => 'TransactionSetupController@destroy',
+    'roles' => ['Admin', 'Managerial','Petugas']
+]);
+
   Route::get('master/setup', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup',
@@ -311,6 +318,13 @@ Route::post('master/store', [
       'middleware' => ['auth', 'roles'],
       'as' => 'transaction.setup.forbuildings',
       'uses' => 'TransactionSetupController@trans_for_building',
+      'roles' => ['Admin', 'Managerial','Petugas']
+  ]);
+
+  Route::get('master/setup/statusitems', [
+      'middleware' => ['auth', 'roles'],
+      'as' => 'transaction.setup.statusitems',
+      'uses' => 'TransactionSetupController@trans_status_item',
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 });
