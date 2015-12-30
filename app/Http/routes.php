@@ -651,7 +651,7 @@ Route::group(array('prefix' => 'master'),function() {
       'roles' => ['Admin', 'Managerial','Petugas']
   ]);
 
-  Route::get('get_kprk_data', [
+  Route::get('get_kprk_data/{region_id}', [
       'middleware' => ['auth', 'roles'],
       'as' => 'master.get_kprk_data',
       'uses' => 'RegionController@get_kprk_data',

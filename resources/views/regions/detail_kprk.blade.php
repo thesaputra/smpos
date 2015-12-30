@@ -140,7 +140,7 @@ $(document).ready(function() {
   $('#kprks-table').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '{!! route('master.get_kprk_data') !!}',
+    ajax: '{!! route('master.get_kprk_data',$data_kprk["region"]->id ) !!}',
     columns: [
       {data: 'rownum', name: 'rownum',searchable: false},
       { data: 'code', name: 'code' },

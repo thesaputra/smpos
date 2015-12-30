@@ -195,13 +195,14 @@ class OfficeController extends Controller
       $division=$request->input();
       $save_division = OfficeDivision::create($division);
 
-      $imageName = $save_division->id . '-divisi.' .
-      $request->file('url_photo')->getClientOriginalExtension();
+      if ($request->file('url_photo') != "") {
+        $imageName = $save_division->id . '-divisi.' .
+        $request->file('url_photo')->getClientOriginalExtension();
 
-       $request->file('url_photo')->move(
-           base_path() . '/public/images/divisions/', $imageName
-       );
-
+         $request->file('url_photo')->move(
+             base_path() . '/public/images/divisions/', $imageName
+         );
+      }
       // return Redirect::to(URL::previous() . "#kprks-table");
       Session::flash("flash_message", "Data tersimpan!");
 
@@ -229,6 +230,7 @@ class OfficeController extends Controller
 
       $offDivision=OfficeDivision::find($id);
       $offDivision->update($DivisionUpdate);
+      if ($request->file('url_photo') != "") {
 
       $imageName = $offDivision->id . '-divisi.' .
       $request->file('url_photo')->getClientOriginalExtension();
@@ -236,6 +238,7 @@ class OfficeController extends Controller
        $request->file('url_photo')->move(
            base_path() . '/public/images/divisions/', $imageName
        );
+     }
 
       Session::flash('flash_message', 'Data berhasil diupdate!');
 
@@ -344,6 +347,7 @@ class OfficeController extends Controller
 
       $offDepart=officeDepart::find($id);
       $offDepart->update($DepartUpdate);
+      if ($request->file('url_photo') != "") {
 
       $imageName = $offDepart->id . '-bagian.' .
       $request->file('url_photo')->getClientOriginalExtension();
@@ -351,6 +355,7 @@ class OfficeController extends Controller
        $request->file('url_photo')->move(
            base_path() . '/public/images/bagian/', $imageName
        );
+     }
 
       Session::flash('flash_message', 'Data berhasil diupdate!');
 
