@@ -94,7 +94,8 @@ $(document).ready(function() {
       data: data,
       dataType: "Json",
       success: function (data) {
-        console.log(data);
+
+
         $('#office_region_id').html('');
           $('#division_kprk_id').html('');
         $.each(data, function (index, value) {
@@ -102,6 +103,27 @@ $(document).ready(function() {
           newOption.attr('value', index).text(value);
           $('#office_region_id').append(newOption);
         })
+
+        data_at = {
+          'id': $('#office_region_id :selected').val(),
+          'type': $('#off-reg').val()
+        };
+        
+        $.ajax({
+          type: "POST",
+          url: '{{ route("ajax.divisi_kprk_select") }}',
+          data: data_at,
+          dataType: "Json",
+          success: function (data) {
+            console.log(data);
+            $.each(data, function (index, value) {
+              var newOption = $('<option>');
+              newOption.attr('value', index).text(value);
+              $('#division_kprk_id').append(newOption);
+            })
+          }
+        });
+
       }
     });
   });
@@ -111,7 +133,6 @@ $(document).ready(function() {
       'id': $(this).val(),
       'type': $('#off-reg').val()
     };
-    console.log(data);
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': '{!! csrf_token() !!}'
@@ -124,7 +145,6 @@ $(document).ready(function() {
       data: data,
       dataType: "Json",
       success: function (data) {
-        console.log(data);
         $('#division_kprk_id').html('');
         $.each(data, function (index, value) {
           var newOption = $('<option>');
